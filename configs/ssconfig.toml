@@ -1,0 +1,8 @@
+[site]
+root = ""
+port = "1313"
+db = "users.db"
+service = ["github.com", "newbeelearn", "sserver", "gh-pages", ""]
+domain = ""
+syncinterval = "@every 12h"
+serverpath = "wwwss"

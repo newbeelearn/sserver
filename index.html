@@ -1,0 +1,360 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<!-- 2021-12-07 Tue 20:44 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Simple server for static content</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="John" />
+<meta name="description" content="Self hosted netlify clone"
+ />
+<link rel="stylesheet" type="text/css" href="worg.css" />
+<script type="text/javascript">
+// @license magnet:?xt=urn:btih:e95b018ef3580986a04669f1b5879592219e2a7a&dn=public-domain.txt Public Domain
+<!--/*--><![CDATA[/*><!--*/
+     function CodeHighlightOn(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.add("code-highlighted");
+         target.classList.add("code-highlighted");
+       }
+     }
+     function CodeHighlightOff(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.remove("code-highlighted");
+         target.classList.remove("code-highlighted");
+       }
+     }
+    /*]]>*///-->
+// @license-end
+</script>
+</head>
+<body>
+<div id="content">
+<h1 class="title">Simple server for static content</h1>
+<p>
+Self hosted netlify clone to serve your static content. <b>sserver</b> is simple headless server that can be used to host your static content.
+It provides https including certificate renewals, synchronizes content from github repository all in a single binary.
+Upcoming features include access control and stripe integration so you can use your favorite static site generator for your site/blog as well as selling your courses. 
+</p>
+
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#orga26bf65">1. Features</a></li>
+<li><a href="#org48ad30b">2. Usage</a>
+<ul>
+<li><a href="#orga43193f">2.1. github repository without configuration file</a></li>
+<li><a href="#orgf3fc124">2.2. Folder in github repository without config file</a></li>
+<li><a href="#org1293369">2.3. Branch of github repository repository without config file (like gh-pages)</a></li>
+<li><a href="#org40bd8bc">2.4. github repository with domain name without config file</a></li>
+<li><a href="#org858b7a2">2.5. github repository with configuration file</a></li>
+</ul>
+</li>
+<li><a href="#orgf9314a5">3. Operational details</a>
+<ul>
+<li><a href="#orgbd7b860">3.1. Description of files created by <b>sserver</b></a></li>
+<li><a href="#orge6e4554">3.2. Configuration</a></li>
+<li><a href="#orga590d32">3.3. Default Values in absence of configuration file</a></li>
+</ul>
+</li>
+<li><a href="#org6b8aa92">4. FAQ</a>
+<ul>
+<li><a href="#orgfbcf1a8">4.1. Is this opensource?</a></li>
+<li><a href="#org0cbc0ea">4.2. Why was this created?</a></li>
+<li><a href="#orgc7b6acf">4.3. What are the supported OS?</a></li>
+<li><a href="#org6926d48">4.4. Where can i request feature? suggestions for improvement?</a></li>
+<li><a href="#org81cd288">4.5. I provided serverpath in config file and left rest of the values blank why is it not working?</a></li>
+<li><a href="#org81ae873">4.6. I have found that i can register and login users should i use them?</a></li>
+<li><a href="#orgd83bc91">4.7. What does it costs?</a></li>
+</ul>
+</li>
+<li><a href="#orge67a931">5. TODO</a></li>
+</ul>
+</div>
+</div>
+<div id="outline-container-orga26bf65" class="outline-2">
+<h2 id="orga26bf65"><span class="section-number-2">1</span> Features</h2>
+<div class="outline-text-2" id="text-1">
+<ul class="org-ul">
+<li class="on"><code>[X]</code> Serve static site</li>
+<li class="on"><code>[X]</code> Auto https support via letsencrypt</li>
+<li class="on"><code>[X]</code> Sync site from github repository</li>
+<li class="off"><code>[&#xa0;]</code> Add api to register new users</li>
+<li class="off"><code>[&#xa0;]</code> Add api to authenticate users</li>
+<li class="off"><code>[&#xa0;]</code> Add support for specifying course details</li>
+<li class="off"><code>[&#xa0;]</code> Add api to authorize users to download course content</li>
+<li class="off"><code>[&#xa0;]</code> Add admin api</li>
+<li class="off"><code>[&#xa0;]</code> Add stripe integration for buying course</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org48ad30b" class="outline-2">
+<h2 id="org48ad30b"><span class="section-number-2">2</span> Usage</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+Here are some examples of how it can be used
+</p>
+</div>
+<div id="outline-container-orga43193f" class="outline-3">
+<h3 id="orga43193f"><span class="section-number-3">2.1</span> github repository without configuration file</h3>
+<div class="outline-text-3" id="text-2-1">
+<pre class="example">
+./sserver -token "&lt;github_token&gt;" -repo "https://github.com/newbeelearn/sserver.git"  
+</pre>
+
+<p>
+Repository should have index.html in its root directory. If hugo/jekyll etc. like static site generator is used, repository should contain generated site.(It would have index.html in root by default)
+</p>
+</div>
+</div>
+<div id="outline-container-orgf3fc124" class="outline-3">
+<h3 id="orgf3fc124"><span class="section-number-3">2.2</span> Folder in github repository without config file</h3>
+<div class="outline-text-3" id="text-2-2">
+<pre class="example">
+./sserver -token "&lt;github_token&gt;" -repo "https://github.com/newbeelearn/sserver.git?folder=public"  
+</pre>
+
+<p>
+Repository should have index.html in folder from where you want to serve the content, typically it is public if hugo/jekyll etc. static site generators are used
+</p>
+</div>
+</div>
+<div id="outline-container-org1293369" class="outline-3">
+<h3 id="org1293369"><span class="section-number-3">2.3</span> Branch of github repository repository without config file (like gh-pages)</h3>
+<div class="outline-text-3" id="text-2-3">
+<pre class="example">
+./sserver -token "&lt;github_token&gt;" -repo "https://github.com/newbeelearn/sserver.git?ref=gh-pages"  
+</pre>
+
+<p>
+Branch should have index.html in its root directory. If hugo/jekyll etc. like static site generator is used, branch should contain generated site.(It would have index.html in root by default)
+</p>
+</div>
+</div>
+<div id="outline-container-org40bd8bc" class="outline-3">
+<h3 id="org40bd8bc"><span class="section-number-3">2.4</span> github repository with domain name without config file</h3>
+<div class="outline-text-3" id="text-2-4">
+<div class="org-src-container">
+<pre class="src src-shell">./sserver -token <span style="color: #8b2252;">"&lt;github_token&gt;"</span> -repo <span style="color: #8b2252;">"https://github.com/newbeelearn/sserver.git?domain=example.com"</span>  
+</pre>
+</div>
+
+<p>
+Repository should have index.html in its root directory
+Access to the domain from which site is served
+<b>sserver</b> should have permissions to bind to 443 port, this can be done with following command
+</p>
+<pre class="example">
+sudo setcap 'cap_net_bind_service=+ep' sserver  
+</pre>
+</div>
+</div>
+
+<div id="outline-container-org858b7a2" class="outline-3">
+<h3 id="org858b7a2"><span class="section-number-3">2.5</span> github repository with configuration file</h3>
+<div class="outline-text-3" id="text-2-5">
+<div class="org-src-container">
+<pre class="src src-shell">./sserver -token <span style="color: #8b2252;">"&lt;github_token&gt;"</span> -repo <span style="color: #8b2252;">"https://github.com/newbeelearn/sserver.git?folder=configs"</span>
+</pre>
+</div>
+<p>
+Repository should contain ssconfig.toml configuration file in its root directory
+Sample ssconfig.toml can be found below
+</p>
+<pre class="example" id="orgc665592">
+#specify the site
+[site]
+#for local sites that
+root = ""
+#port where you want to serve the site
+port = "1313"
+#sqlite db file for users/auth permissions and course pricing
+db = "users.db"
+#github repository details of the form github.com/owner/repo/ref/folder
+service = ["github.com", "newbeelearn", "sserver", "gh-pages", ""]
+#domain of the site
+domain = "example.com"
+#period to check for new content
+syncinterval = "@every 12h"
+#path where all the sserver files will be created
+serverpath = "wwwss"  
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgf9314a5" class="outline-2">
+<h2 id="orgf9314a5"><span class="section-number-2">3</span> Operational details</h2>
+<div class="outline-text-2" id="text-3">
+</div>
+<div id="outline-container-orgbd7b860" class="outline-3">
+<h3 id="orgbd7b860"><span class="section-number-3">3.1</span> Description of files created by <b>sserver</b></h3>
+<div class="outline-text-3" id="text-3-1">
+<p>
+<b>sserver</b> creates "wwwss" directory from where it is run unless something else is provided in ssconfig.toml
+</p>
+<div class="org-src-container">
+<pre class="src src-shell">drwxrwxr-x 2 test test   4096 Nov 30 17:04 a
+drwxrwxr-x 8 test test   4096 Nov 30 17:04 b
+drwxrwxr-x 2 test test   4096 Nov 30 17:04 certs
+drwxrwxr-x 2 test test   4096 Nov 30 17:04 logs
+-rw-rw-r-- 1 test test 527483 Nov 30 17:04 tmp.zip
+-rw-rw-r-- 1 test test  49152 Nov 30 17:05 users.db
+</pre>
+</div>
+<ul class="org-ul">
+<li>If https is used key and certificates can be found in certs</li>
+<li>Server access logs are inside logs folder</li>
+<li>Database of users/permissions and course details are in sqlite file with ending ".db"(users.db in this example)</li>
+<li>tmp.zip is temporary site downloaded from github and is overwritten on every sync</li>
+<li>a/b folders is from where site is served. Actual folder keeps on alternating between the two.</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-orge6e4554" class="outline-3">
+<h3 id="orge6e4554"><span class="section-number-3">3.2</span> Configuration</h3>
+<div class="outline-text-3" id="text-3-2">
+<p>
+Note when ssconfig.toml is provided all parameters must be specified as all default values are set to "" .
+</p>
+
+<p>
+Sample ssconfig.toml file
+</p>
+<pre class="example" id="orge189753">
+#specify the site
+[site]
+#for local sites that
+root = ""
+#port where you want to serve the site
+port = "1313"
+#sqlite db file for users/auth permissions and course pricing
+db = "users.db"
+#github repository details of the form github.com/owner/repo/ref/folder
+service = ["github.com", "newbeelearn", "sserver", "gh-pages", ""]
+#domain of the site
+domain = "example.com"
+#period to check for new content
+syncinterval = "@every 12h"
+#path where all the sserver files will be created
+serverpath = "wwwss"  
+</pre>
+</div>
+</div>
+<div id="outline-container-orga590d32" class="outline-3">
+<h3 id="orga590d32"><span class="section-number-3">3.3</span> Default Values in absence of configuration file</h3>
+<div class="outline-text-3" id="text-3-3">
+<p>
+Here are the default values when ssconfig.toml is not provided.
+</p>
+<pre class="example" id="org560c360">
+root = ""
+port = "1313"
+db = "users.db"
+# 12 hours
+syncinterval = "@every 12h"
+serverpath = "wwwss"
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org6b8aa92" class="outline-2">
+<h2 id="org6b8aa92"><span class="section-number-2">4</span> FAQ</h2>
+<div class="outline-text-2" id="text-4">
+</div>
+<div id="outline-container-orgfbcf1a8" class="outline-3">
+<h3 id="orgfbcf1a8"><span class="section-number-3">4.1</span> Is this opensource?</h3>
+<div class="outline-text-3" id="text-4-1">
+<p>
+No, only binaries are released and site is used for discussions around the product.
+</p>
+</div>
+</div>
+<div id="outline-container-org0cbc0ea" class="outline-3">
+<h3 id="org0cbc0ea"><span class="section-number-3">4.2</span> Why was this created?</h3>
+<div class="outline-text-3" id="text-4-2">
+<p>
+This was created because of the need to host courses
+</p>
+<ol class="org-ol">
+<li>Without giving up control by using online saas services for hosting course.</li>
+<li>Avoid using complicated opensource solutions that require constant maintenance.</li>
+<li>Use same site generated by static site generators for landing page/blog and protected course content.</li>
+<li>Something simple to avoid maintenance overhead.</li>
+</ol>
+</div>
+</div>
+<div id="outline-container-orgc7b6acf" class="outline-3">
+<h3 id="orgc7b6acf"><span class="section-number-3">4.3</span> What are the supported OS?</h3>
+<div class="outline-text-3" id="text-4-3">
+<p>
+linux and macos are supported out of the box. Windows users can use WSL however it is not tested.
+</p>
+</div>
+</div>
+<div id="outline-container-org6926d48" class="outline-3">
+<h3 id="org6926d48"><span class="section-number-3">4.4</span> Where can i request feature? suggestions for improvement?</h3>
+<div class="outline-text-3" id="text-4-4">
+<p>
+Create issue and tag it with feature
+</p>
+</div>
+</div>
+<div id="outline-container-org81cd288" class="outline-3">
+<h3 id="org81cd288"><span class="section-number-3">4.5</span> I provided serverpath in config file and left rest of the values blank why is it not working?</h3>
+<div class="outline-text-3" id="text-4-5">
+<p>
+In case ssconfig.toml is provided, please provide all the fields. Default values are used only when ssconfig.toml
+is not provided
+</p>
+</div>
+</div>
+<div id="outline-container-org81ae873" class="outline-3">
+<h3 id="org81ae873"><span class="section-number-3">4.6</span> I have found that i can register and login users should i use them?</h3>
+<div class="outline-text-3" id="text-4-6">
+<p>
+It is in pre alpha stage and i am gathering requirements from users so there are no compatibility guarantees.
+You can give it a try however i would suggest to wait for sometime before using these features in production.
+Let us know what feature you are interested in discussions
+</p>
+</div>
+</div>
+<div id="outline-container-orgd83bc91" class="outline-3">
+<h3 id="orgd83bc91"><span class="section-number-3">4.7</span> What does it costs?</h3>
+<div class="outline-text-3" id="text-4-7">
+<p>
+This is not yet decided as of now it is free to use. 
+Paid product if available will use separate channel.
+so if you are downloading from github release it is free forever.
+Help us in deciding it, tell us what you would pay for it in discussion board.
+</p>
+</div>
+</div>
+</div>
+<div id="outline-container-orge67a931" class="outline-2">
+<h2 id="orge67a931"><span class="section-number-2">5</span> TODO</h2>
+<div class="outline-text-2" id="text-5">
+<ul class="org-ul">
+<li class="off"><code>[&#xa0;]</code> Add sample scripts for running in aws/gcp/azure/alibabacloud etc.</li>
+<li class="off"><code>[&#xa0;]</code> Add sample site to demonstrate server functionality</li>
+<li class="off"><code>[&#xa0;]</code> Add performance data</li>
+</ul>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="author">Author: John</p>
+<p class="date">Created: 2021-12-07 Tue 20:44</p>
+<p class="validation"><a href="https://validator.w3.org/check?uri=referer">Validate</a></p>
+</div>
+</body>
+</html>
