@@ -5,29 +5,29 @@ Upcoming features include access control and stripe integration so you can use y
 
 # Table of Contents
 
-1.  [Features](#orge20de41)
-2.  [Usage](#orgfa94247)
-    1.  [github repository without configuration file](#org90e7351)
-    2.  [Folder in github repository without config file](#org2504298)
-    3.  [Branch of github repository repository without config file (like gh-pages)](#orgd3f1131)
-    4.  [github repository with domain name without config file](#org0e264b1)
-    5.  [github repository with configuration file](#org7b0ff6a)
-3.  [Operational details](#org8d0bb60)
-    1.  [Description of files created by **sserver**](#orgbaa8d7e)
-    2.  [Configuration](#org9a7de76)
-    3.  [Default Values in absence of configuration file](#org4b112ca)
-4.  [FAQ](#orgf9ca1c6)
-    1.  [Is this opensource?](#org33a8a9c)
-    2.  [Why was this created?](#orga61ec0e)
-    3.  [What are the supported OS?](#orgc9b2fc4)
-    4.  [Where can i request feature? suggestions for improvement?](#org38e4bd9)
-    5.  [I provided serverpath in config file and left rest of the values blank why is it not working?](#org5bc7e4e)
-    6.  [I have found that i can register and login users should i use them?](#org7670486)
-    7.  [What does it costs?](#org9ca4f3a)
-5.  [TODO](#org6ab43aa)
+1.  [Features](#org7f6c44b)
+2.  [Usage](#orgcef91cf)
+    1.  [github repository without configuration file](#org0a4a158)
+    2.  [Folder in github repository without config file](#orgfd183fa)
+    3.  [Branch of github repository repository without config file (like gh-pages)](#orge988b74)
+    4.  [github repository with domain name without config file](#orgbc4dadd)
+    5.  [github repository with configuration file](#orgc1ff168)
+3.  [Operational details](#org3f61757)
+    1.  [Description of files created by **sserver**](#org368408a)
+    2.  [Configuration](#org5ea7bc0)
+    3.  [Default Values in absence of configuration file](#org29801eb)
+4.  [FAQ](#orgb35371a)
+    1.  [Is this opensource?](#orge5443d4)
+    2.  [Why was this created?](#org80e90a5)
+    3.  [What are the supported OS?](#org913867a)
+    4.  [Where can i request feature? suggestions for improvement?](#org7fc3cc4)
+    5.  [I provided serverpath in config file and left rest of the values blank why is it not working?](#org8254e21)
+    6.  [I have found that i can register and login users should i use them?](#org28f44f4)
+    7.  [What does it costs?](#org56ea680)
+5.  [TODO](#org5451c0a)
 
 
-<a id="orge20de41"></a>
+<a id="org7f6c44b"></a>
 
 # Features
 
@@ -42,7 +42,7 @@ Upcoming features include access control and stripe integration so you can use y
 -   [ ] Add stripe integration for buying course
 
 
-<a id="orgfa94247"></a>
+<a id="orgcef91cf"></a>
 
 # Usage
 
@@ -51,7 +51,7 @@ Here are some examples of how it can be used, please make sure to set GITHUB<sub
     export GITHUB_AUTH=<github_token>
 
 
-<a id="org90e7351"></a>
+<a id="org0a4a158"></a>
 
 ## github repository without configuration file
 
@@ -60,7 +60,7 @@ Here are some examples of how it can be used, please make sure to set GITHUB<sub
 Repository should have index.html in its root directory. If hugo/jekyll etc. like static site generator is used, repository should contain generated site.(It would have index.html in root by default)
 
 
-<a id="org2504298"></a>
+<a id="orgfd183fa"></a>
 
 ## Folder in github repository without config file
 
@@ -69,7 +69,7 @@ Repository should have index.html in its root directory. If hugo/jekyll etc. lik
 Repository should have index.html in folder from where you want to serve the content, typically it is public if hugo/jekyll etc. static site generators are used
 
 
-<a id="orgd3f1131"></a>
+<a id="orge988b74"></a>
 
 ## Branch of github repository repository without config file (like gh-pages)
 
@@ -78,7 +78,7 @@ Repository should have index.html in folder from where you want to serve the con
 Branch should have index.html in its root directory. If hugo/jekyll etc. like static site generator is used, branch should contain generated site.(It would have index.html in root by default)
 
 
-<a id="org0e264b1"></a>
+<a id="orgbc4dadd"></a>
 
 ## github repository with domain name without config file
 
@@ -91,11 +91,11 @@ Access to the domain from which site is served
     sudo setcap 'cap_net_bind_service=+ep' sserver  
 
 
-<a id="org7b0ff6a"></a>
+<a id="orgc1ff168"></a>
 
 ## github repository with configuration file
 
-    ./sserver -token "$GITHUB_AUTH" -repo "https://github.com/newbeelearn/sserver.git?folder=configs"
+    ./sserver -token "$GITHUB_AUTH" -repo "https://github.com/newbeelearn/sserver.git?ref=test-config"
 
 Repository should contain ssconfig.toml configuration file in its root directory
 Sample ssconfig.toml can be found below
@@ -118,12 +118,12 @@ Sample ssconfig.toml can be found below
     serverpath = "wwwss"  
 
 
-<a id="org8d0bb60"></a>
+<a id="org3f61757"></a>
 
 # Operational details
 
 
-<a id="orgbaa8d7e"></a>
+<a id="org368408a"></a>
 
 ## Description of files created by **sserver**
 
@@ -143,7 +143,7 @@ Sample ssconfig.toml can be found below
 -   a/b folders is from where site is served. Actual folder keeps on alternating between the two.
 
 
-<a id="org9a7de76"></a>
+<a id="org5ea7bc0"></a>
 
 ## Configuration
 
@@ -169,7 +169,7 @@ Sample ssconfig.toml file
     serverpath = "wwwss"  
 
 
-<a id="org4b112ca"></a>
+<a id="org29801eb"></a>
 
 ## Default Values in absence of configuration file
 
@@ -183,19 +183,19 @@ Here are the default values when ssconfig.toml is not provided.
     serverpath = "wwwss"
 
 
-<a id="orgf9ca1c6"></a>
+<a id="orgb35371a"></a>
 
 # FAQ
 
 
-<a id="org33a8a9c"></a>
+<a id="orge5443d4"></a>
 
 ## Is this opensource?
 
 No, only binaries are released and site is used for discussions around the product.
 
 
-<a id="orga61ec0e"></a>
+<a id="org80e90a5"></a>
 
 ## Why was this created?
 
@@ -207,21 +207,21 @@ This was created because of the need to host courses
 4.  Something simple to avoid maintenance overhead.
 
 
-<a id="orgc9b2fc4"></a>
+<a id="org913867a"></a>
 
 ## What are the supported OS?
 
 linux and macos are supported out of the box. Windows users can use WSL however it is not tested.
 
 
-<a id="org38e4bd9"></a>
+<a id="org7fc3cc4"></a>
 
 ## Where can i request feature? suggestions for improvement?
 
 Create issue and tag it with feature
 
 
-<a id="org5bc7e4e"></a>
+<a id="org8254e21"></a>
 
 ## I provided serverpath in config file and left rest of the values blank why is it not working?
 
@@ -229,7 +229,7 @@ In case ssconfig.toml is provided, please provide all the fields. Default values
 is not provided
 
 
-<a id="org7670486"></a>
+<a id="org28f44f4"></a>
 
 ## I have found that i can register and login users should i use them?
 
@@ -238,7 +238,7 @@ You can give it a try however i would suggest to wait for sometime before using 
 Let us know what feature you are interested in discussions
 
 
-<a id="org9ca4f3a"></a>
+<a id="org56ea680"></a>
 
 ## What does it costs?
 
@@ -248,7 +248,7 @@ so if you are downloading from github release it is free forever.
 Help us in deciding it, tell us what you would pay for it in discussion board.
 
 
-<a id="org6ab43aa"></a>
+<a id="org5451c0a"></a>
 
 # TODO
 
