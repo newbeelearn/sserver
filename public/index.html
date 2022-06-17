@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2021-12-07 Tue 21:09 -->
+<!-- 2022-06-16 Thu 16:23 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Simple server for static content</title>
@@ -39,120 +39,140 @@
 <div id="content">
 <h1 class="title">Simple server for static content</h1>
 <p>
-Self hosted netlify clone to serve your static content. <b>sserver</b> is simple headless server that can be used to host your static content.
-It provides https including certificate renewals, synchronizes content from github repository all in a single binary.
-Upcoming features include access control and stripe integration so you can use your favorite static site generator for your site/blog as well as selling your courses. 
+Serve your site and sell courses with self hosted server.
+</p>
+
+<p>
+<b>sserver</b> is simple headless server for hosting courses and associated blog/static content with minimal overhead.
+</p>
+
+<p>
+It provides https out of the box so you don't have to deal with installing/managing certificates.
+It syncs the content automatically from github so you don't have to upload your content to server. It also supports premium content with simple configuration file without affecting your content workflow for e.g. if you are using static site generator like hugo you can hide the premium content from public by specifying it in config file. It has stripe integration so you can sell your premium content. It has user management built in for adding/authenticating users.
+It also has admin api so you can monitor orders/users of your site.
 </p>
 
 <div id="table-of-contents">
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orgd682873">1. Features</a></li>
-<li><a href="#org9b7f917">2. Usage</a>
+<li><a href="#orgff10ec5">1. Features</a></li>
+<li><a href="#orgb48e275">2. Usage</a>
 <ul>
-<li><a href="#org032484b">2.1. github repository without configuration file</a></li>
-<li><a href="#org0239da8">2.2. Folder in github repository without config file</a></li>
-<li><a href="#org77d9967">2.3. Branch of github repository repository without config file (like gh-pages)</a></li>
-<li><a href="#org3d19538">2.4. github repository with domain name without config file</a></li>
-<li><a href="#orgd8699a5">2.5. github repository with configuration file</a></li>
+<li><a href="#org91e01fe">2.1. github repository</a></li>
+<li><a href="#org81fcc9d">2.2. Folder in github repository with config file</a></li>
+<li><a href="#org49c3a09">2.3. Branch of github repository repository with config file (like gh-pages)</a></li>
+<li><a href="#orgc9069a9">2.4. github repository with domain name</a></li>
+<li><a href="#org706fa77">2.5. local files</a></li>
 </ul>
 </li>
-<li><a href="#org4e2756e">3. Operational details</a>
+<li><a href="#org211f02f">3. Operational details</a>
 <ul>
-<li><a href="#org28bd26d">3.1. Description of files created by <b>sserver</b></a></li>
-<li><a href="#orgf55f2a5">3.2. Configuration</a></li>
-<li><a href="#org1dd939c">3.3. Default Values in absence of configuration file</a></li>
+<li><a href="#org2500148">3.1. Description of files created by <b>sserver</b></a></li>
+<li><a href="#org1a51632">3.2. Configuration</a></li>
+<li><a href="#orga46c60a">3.3. Default Values</a></li>
 </ul>
 </li>
-<li><a href="#org5496d1c">4. FAQ</a>
+<li><a href="#org3832274">4. API</a>
 <ul>
-<li><a href="#org8616d54">4.1. Is this opensource?</a></li>
-<li><a href="#orgf09c36e">4.2. Why was this created?</a></li>
-<li><a href="#org3e11b91">4.3. What are the supported OS?</a></li>
-<li><a href="#org6cd4a13">4.4. Where can i request feature? suggestions for improvement?</a></li>
-<li><a href="#org8952ae8">4.5. I provided serverpath in config file and left rest of the values blank why is it not working?</a></li>
-<li><a href="#org6e3284e">4.6. I have found that i can register and login users should i use them?</a></li>
-<li><a href="#org9c1a5ef">4.7. What does it costs?</a></li>
+<li><a href="#orga654ae9">4.1. API Endpoints</a></li>
 </ul>
 </li>
-<li><a href="#org21617ad">5. TODO</a></li>
+<li><a href="#org3f506ca">5. FAQ</a>
+<ul>
+<li><a href="#org731c923">5.1. Is this opensource?</a></li>
+<li><a href="#orgbb39229">5.2. What is the current status?</a></li>
+<li><a href="#orgb5daa82">5.3. Why was this created?</a></li>
+<li><a href="#orga957c61">5.4. Can i use it for saas it already has user mangement and billing?</a></li>
+<li><a href="#org98465fc">5.5. What are the use cases?</a></li>
+<li><a href="#org2c8df24">5.6. What are the supported OS?</a></li>
+<li><a href="#orgb2600b1">5.7. Where can i request feature? suggestions for improvement?</a></li>
+<li><a href="#orgf1cedbf">5.8. What does it costs?</a></li>
+</ul>
+</li>
+<li><a href="#org9d7f69c">6. TODO</a></li>
 </ul>
 </div>
 </div>
-<div id="outline-container-orgd682873" class="outline-2">
-<h2 id="orgd682873"><span class="section-number-2">1</span> Features</h2>
+<div id="outline-container-orgff10ec5" class="outline-2">
+<h2 id="orgff10ec5"><span class="section-number-2">1</span> Features</h2>
 <div class="outline-text-2" id="text-1">
 <ul class="org-ul">
-<li class="on"><code>[X]</code> Serve static site</li>
+<li class="on"><code>[X]</code> Serve static content from github/local directory</li>
 <li class="on"><code>[X]</code> Auto https support via letsencrypt</li>
-<li class="on"><code>[X]</code> Sync site from github repository</li>
-<li class="off"><code>[&#xa0;]</code> Add api to register new users</li>
-<li class="off"><code>[&#xa0;]</code> Add api to authenticate users</li>
-<li class="off"><code>[&#xa0;]</code> Add support for specifying course details</li>
-<li class="off"><code>[&#xa0;]</code> Add api to authorize users to download course content</li>
-<li class="off"><code>[&#xa0;]</code> Add admin api</li>
-<li class="off"><code>[&#xa0;]</code> Add stripe integration for buying course</li>
+<li class="on"><code>[X]</code> Auto sync content from github repository</li>
+<li class="on"><code>[X]</code> Support for gated content/course</li>
+<li class="on"><code>[X]</code> Stripe integration for selling course</li>
+<li class="on"><code>[X]</code> User registration and authentication</li>
+<li class="on"><code>[X]</code> Admin apis to get overall view of the store</li>
 </ul>
 </div>
 </div>
-<div id="outline-container-org9b7f917" class="outline-2">
-<h2 id="org9b7f917"><span class="section-number-2">2</span> Usage</h2>
+<div id="outline-container-orgb48e275" class="outline-2">
+<h2 id="orgb48e275"><span class="section-number-2">2</span> Usage</h2>
 <div class="outline-text-2" id="text-2">
 <p>
-Here are some examples of how it can be used, please make sure to set GITHUB<sub>AUTH</sub> before trying them out e.g.
+Here are some examples of how it can be used, please make sure to set SS_&lt;&gt; environment variables before trying them out e.g.
 </p>
 <pre class="example">
-export GITHUB_AUTH=&lt;github_token&gt;
+export SS_GITHUB_TOKEN=&lt;github_token&gt;
+export SS_STRIPE_TOKEN=&lt;stripe_token&gt;
+export SS_SMTP_FROM=&lt;email_id&gt;
+export SS_SMTP_USER=&lt;smtp_username&gt;
+export SS_SMTP_PWD=&lt;smtp_password&gt;
+export SS_SMTP_HOST=&lt;smtp_host_address&gt;
+export SS_SMTP_PORT=&lt;smtp_port&gt;
+export SS_ADMIN_EMAIL=&lt;admin_email&gt;
+export SS_ADMIN_PWD=&lt;admin_password_for_sserver&gt;
 </pre>
 </div>
 
-<div id="outline-container-org032484b" class="outline-3">
-<h3 id="org032484b"><span class="section-number-3">2.1</span> github repository without configuration file</h3>
+<div id="outline-container-org91e01fe" class="outline-3">
+<h3 id="org91e01fe"><span class="section-number-3">2.1</span> github repository</h3>
 <div class="outline-text-3" id="text-2-1">
 <pre class="example">
-./sserver -token "$GITHUB_AUTH" -repo "https://github.com/newbeelearn/sserver.git"  
+./sserver -repo "https://github.com/newbeelearn/sserver.git"
 </pre>
 
 <p>
-Repository should have index.html in its root directory. If hugo/jekyll etc. like static site generator is used, repository should contain generated site.(It would have index.html in root by default)
+Repository should have index.html and ssconfig.toml in its root directory. If hugo/jekyll etc. like static site generator is used, repository should contain generated site.(It would have index.html in root by default)
 </p>
 </div>
 </div>
-<div id="outline-container-org0239da8" class="outline-3">
-<h3 id="org0239da8"><span class="section-number-3">2.2</span> Folder in github repository without config file</h3>
+<div id="outline-container-org81fcc9d" class="outline-3">
+<h3 id="org81fcc9d"><span class="section-number-3">2.2</span> Folder in github repository with config file</h3>
 <div class="outline-text-3" id="text-2-2">
 <pre class="example">
-./sserver -token "$GITHUB_AUTH" -repo "https://github.com/newbeelearn/sserver.git?folder=public"  
+./sserver -repo "https://github.com/newbeelearn/sserver.git?folder=public"  
 </pre>
 
 <p>
-Repository should have index.html in folder from where you want to serve the content, typically it is public if hugo/jekyll etc. static site generators are used
+Repository should have index.html in folder from where you want to serve the content, typically it is public if hugo/jekyll etc. static site generators are used. It should have ssconfig.toml in the root directory
 </p>
 </div>
 </div>
-<div id="outline-container-org77d9967" class="outline-3">
-<h3 id="org77d9967"><span class="section-number-3">2.3</span> Branch of github repository repository without config file (like gh-pages)</h3>
+<div id="outline-container-org49c3a09" class="outline-3">
+<h3 id="org49c3a09"><span class="section-number-3">2.3</span> Branch of github repository repository with config file (like gh-pages)</h3>
 <div class="outline-text-3" id="text-2-3">
 <pre class="example">
-./sserver -token "$GITHUB_AUTH" -repo "https://github.com/newbeelearn/sserver.git?ref=gh-pages"  
+./sserver -repo "https://github.com/newbeelearn/sserver.git?ref=test-config"  
 </pre>
 
 <p>
-Branch should have index.html in its root directory. If hugo/jekyll etc. like static site generator is used, branch should contain generated site.(It would have index.html in root by default)
+Branch should have index.html and ssconfig.toml in its root directory. If hugo/jekyll etc. like static site generator is used, branch should contain generated site.(It would have index.html in root by default)
 </p>
 </div>
 </div>
-<div id="outline-container-org3d19538" class="outline-3">
-<h3 id="org3d19538"><span class="section-number-3">2.4</span> github repository with domain name without config file</h3>
+<div id="outline-container-orgc9069a9" class="outline-3">
+<h3 id="orgc9069a9"><span class="section-number-3">2.4</span> github repository with domain name</h3>
 <div class="outline-text-3" id="text-2-4">
 <div class="org-src-container">
-<pre class="src src-shell">./sserver -token <span style="color: #8b2252;">"$GITHUB_AUTH"</span> -repo <span style="color: #8b2252;">"https://github.com/newbeelearn/sserver.git?domain=example.com"</span>  
+<pre class="src src-shell">./sserver -repo <span style="color: #8b2252;">"https://github.com/newbeelearn/sserver.git?domain=example.com"</span>  
 </pre>
 </div>
 
 <p>
-Repository should have index.html in its root directory
+Repository should have index.html and ssconfig.toml in its root directory
 Access to the domain from which site is served
 <b>sserver</b> should have permissions to bind to 443 port, this can be done with following command
 </p>
@@ -162,48 +182,52 @@ sudo setcap 'cap_net_bind_service=+ep' sserver
 </div>
 </div>
 
-<div id="outline-container-orgd8699a5" class="outline-3">
-<h3 id="orgd8699a5"><span class="section-number-3">2.5</span> github repository with configuration file</h3>
+<div id="outline-container-org706fa77" class="outline-3">
+<h3 id="org706fa77"><span class="section-number-3">2.5</span> local files</h3>
 <div class="outline-text-3" id="text-2-5">
-<div class="org-src-container">
-<pre class="src src-shell">./sserver -token <span style="color: #8b2252;">"$GITHUB_AUTH"</span> -repo <span style="color: #8b2252;">"https://github.com/newbeelearn/sserver.git?ref=test-config"</span>
+<pre class="example">
+./sserver -repo "file:///workspace/projects/newbeelearn.com/sserver"
 </pre>
-</div>
 <p>
-Repository should contain ssconfig.toml configuration file in its root directory
+Repository should have index.html and ssconfig.toml in its root directory.
+All the options i.e. folder/domain etc. can be specified in case of local files as well
+</p>
+
+<p>
 Sample ssconfig.toml can be found below
 </p>
-<pre class="example" id="org5ce25d1">
-#specify the site
+<pre class="example" id="orgf8a01c4">
+# specify the site
 [site]
-#for local sites that
-root = ""
-#port where you want to serve the site
-port = "1313"
-#sqlite db file for users/auth permissions and course pricing
-db = "users.db"
-#github repository details of the form github.com/owner/repo/ref/folder
-service = ["github.com", "newbeelearn", "sserver", "gh-pages", ""]
-#domain of the site
-domain = "example.com"
-#period to check for new content
+# period to check for new content
 syncinterval = "@every 12h"
-#path where all the sserver files will be created
-serverpath = "wwwss"  
+# product/course details
+[[site.prod]]
+name = "course1"
+# path from root, this will be accessible to users who have bought the course
+path = "courses/course1"
+# can be draft/active, buying functionality will be enabled when status is active
+status = "active"
+# unique identifier for the course
+sku = "prod-course-1"
+# price in cents
+price = 10000
+# currency
+currency = "USD"
 </pre>
 </div>
 </div>
 </div>
 
-<div id="outline-container-org4e2756e" class="outline-2">
-<h2 id="org4e2756e"><span class="section-number-2">3</span> Operational details</h2>
+<div id="outline-container-org211f02f" class="outline-2">
+<h2 id="org211f02f"><span class="section-number-2">3</span> Operational details</h2>
 <div class="outline-text-2" id="text-3">
 </div>
-<div id="outline-container-org28bd26d" class="outline-3">
-<h3 id="org28bd26d"><span class="section-number-3">3.1</span> Description of files created by <b>sserver</b></h3>
+<div id="outline-container-org2500148" class="outline-3">
+<h3 id="org2500148"><span class="section-number-3">3.1</span> Description of files created by <b>sserver</b></h3>
 <div class="outline-text-3" id="text-3-1">
 <p>
-<b>sserver</b> creates "wwwss" directory from where it is run unless something else is provided in ssconfig.toml
+<b>sserver</b> creates "wwwss" directory from where it is run
 </p>
 <div class="org-src-container">
 <pre class="src src-shell">drwxrwxr-x 2 test test   4096 Nov 30 17:04 a
@@ -211,81 +235,894 @@ drwxrwxr-x 8 test test   4096 Nov 30 17:04 b
 drwxrwxr-x 2 test test   4096 Nov 30 17:04 certs
 drwxrwxr-x 2 test test   4096 Nov 30 17:04 logs
 -rw-rw-r-- 1 test test 527483 Nov 30 17:04 tmp.zip
--rw-rw-r-- 1 test test  49152 Nov 30 17:05 users.db
+-rw-rw-r-- 1 test test  49152 Nov 30 17:05 ssapp.db
 </pre>
 </div>
 <ul class="org-ul">
 <li>If https is used key and certificates can be found in certs</li>
 <li>Server access logs are inside logs folder</li>
-<li>Database of users/permissions and course details are in sqlite file with ending ".db"(users.db in this example)</li>
-<li>tmp.zip is temporary site downloaded from github and is overwritten on every sync</li>
+<li>Database of users/permissions and course details are in sqlite file ssapp.db</li>
+<li>tmp.zip is temporary site downloaded from github in zip format and is overwritten on every sync</li>
 <li>a/b folders is from where site is served. Actual folder keeps on alternating between the two.</li>
 </ul>
 </div>
 </div>
-<div id="outline-container-orgf55f2a5" class="outline-3">
-<h3 id="orgf55f2a5"><span class="section-number-3">3.2</span> Configuration</h3>
+<div id="outline-container-org1a51632" class="outline-3">
+<h3 id="org1a51632"><span class="section-number-3">3.2</span> Configuration</h3>
 <div class="outline-text-3" id="text-3-2">
 <p>
-Note when ssconfig.toml is provided all parameters must be specified as all default values are set to "" .
+Configuration file is used to specify the products/courses that you want to sell
+as well as some server parameters like how often the site should be synced etc.
 </p>
+</div>
+<div id="outline-container-orga88c5d0" class="outline-4">
+<h4 id="orga88c5d0"><span class="section-number-4">3.2.1</span> Server parameters are</h4>
+<div class="outline-text-4" id="text-3-2-1">
+<ul class="org-ul">
+<li><b>syncinterval</b> specifies auto syncing period for content default is 12 hours</li>
+<li><b>login</b> specifies login/sign-in page to be redirected to if user tries to access protected content if not specified it redirects
+to home page of the site</li>
+<li><b>postlogin</b> specifies page user should be redirected to in case of successful login if not specified it returns json response
+which needs to be processed from client side</li>
+<li><b>postsignup</b> specifies page user should be redirected to after completing the signup if not specified it returns json response
+which needs to be interpreted on client side</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org6a49094" class="outline-4">
+<h4 id="org6a49094"><span class="section-number-4">3.2.2</span> Product/Course parameters are</h4>
+<div class="outline-text-4" id="text-3-2-2">
+<ul class="org-ul">
+<li><b>name</b> is the name of the product course</li>
+<li><b>path</b> is the path of course content relative to the root directory. This will not be accessible without
+registering and buying the course.</li>
+<li><b>status</b> can be either draft or active. Buying functionality becomes available only when product status is active</li>
+<li><b>sku</b> this should be unique identifier for the course/product. It creates stripe product with the identifier specified in
+sku. If you already have a product in stripe use its id as sku otherwise duplicate products will be created.</li>
+<li><b>price</b> is in cents for USD, i.e. 10.58USD course should set the price as 1058. For other currencies please check stripe documentation
+as the software currently assumes stripe convention for currency and price is followed.</li>
+<li><b>currency</b> should follow stripe convention</li>
+</ul>
+</div>
+</div>
 
+<div id="outline-container-org59f4d52" class="outline-4">
+<h4 id="org59f4d52"><span class="section-number-4">3.2.3</span> Sample config file</h4>
+<div class="outline-text-4" id="text-3-2-3">
 <p>
-Sample ssconfig.toml file
+Sample ssconfig.toml file is shown below
 </p>
-<pre class="example" id="org450def7">
+<pre class="example" id="org68ebec7">
 #specify the site
 [site]
-#for local sites that
-root = ""
-#port where you want to serve the site
-port = "1313"
-#sqlite db file for users/auth permissions and course pricing
-db = "users.db"
-#github repository details of the form github.com/owner/repo/ref/folder
-service = ["github.com", "newbeelearn", "sserver", "gh-pages", ""]
-#domain of the site
-domain = "example.com"
-#period to check for new content
+#period to check for new content default is 12 hours
 syncinterval = "@every 12h"
-#path where all the sserver files will be created
-serverpath = "wwwss"  
+[[site.prod]]
+name = "course1"
+path = "courses/course1"
+status = "active"
+sku = "prod-course-1"
+price = 10000
+currency = "USD"
 </pre>
 </div>
 </div>
-<div id="outline-container-org1dd939c" class="outline-3">
-<h3 id="org1dd939c"><span class="section-number-3">3.3</span> Default Values in absence of configuration file</h3>
+</div>
+<div id="outline-container-orga46c60a" class="outline-3">
+<h3 id="orga46c60a"><span class="section-number-3">3.3</span> Default Values</h3>
 <div class="outline-text-3" id="text-3-3">
-<p>
-Here are the default values when ssconfig.toml is not provided.
-</p>
-<pre class="example" id="org9cebcbe">
-root = ""
-port = "1313"
-db = "users.db"
-# 12 hours
-syncinterval = "@every 12h"
-serverpath = "wwwss"
-</pre>
+<ul class="org-ul">
+<li>If domain is not specified content will be served from port 54545 else port 443</li>
+<li>If local file is specified content will be served from that directory else
+it would be served from wwwss folder which will autosync content from github repository</li>
+<li>If syncinterval is specified it will sync content from github/check content from local file
+with syncinterval duration else it will sync/check for new content every 12 hours</li>
+<li>Syncing between stripe events i.e. refund done through stripe site etc. are synced every
+6 hours</li>
+<li>If SMTP details are not specified, mail sending functionality on registration/reset etc. will be disabled</li>
+</ul>
 </div>
+</div>
+</div>
+<div id="outline-container-org3832274" class="outline-2">
+<h2 id="org3832274"><span class="section-number-2">4</span> API</h2>
+<div class="outline-text-2" id="text-4">
+<p>
+All api endpoints are relative to the domain used for serving the content
+i.e. if domain is example.com and api is <code>/api/v1/product/list</code> request would be <a href="https://example.com/api/v1/product/list">https://example.com/api/v1/product/list</a>
+</p>
+
+<p>
+Role hierarchy is like this admin &gt; user &gt; guest
+Any api accessible to guest is also accessible to user and any api accessible to user is also accessible to admin
+For accessing user/admin api's session cookie obtained after logging in must be supplied with each request
+in practice this will be taken care by the browser
+</p>
+</div>
+<div id="outline-container-orga654ae9" class="outline-3">
+<h3 id="orga654ae9"><span class="section-number-3">4.1</span> API Endpoints</h3>
+<div class="outline-text-3" id="text-4-1">
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Description</th>
+<th scope="col" class="org-left">Request</th>
+<th scope="col" class="org-left">Role</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left"><a href="#org5435a0a">Register User</a></td>
+<td class="org-left">POST <code>/api/v1/user/register</code></td>
+<td class="org-left">guest</td>
+</tr>
+
+<tr>
+<td class="org-left"><a href="#org652be6d">Login User</a></td>
+<td class="org-left">POST <code>/api/v1/user/login</code></td>
+<td class="org-left">guest</td>
+</tr>
+
+<tr>
+<td class="org-left"><a href="#org9aa383a">Logout user</a></td>
+<td class="org-left">GET  <code>/api/v1/user/logout</code></td>
+<td class="org-left">guest</td>
+</tr>
+
+<tr>
+<td class="org-left"><a href="#org962094f">Verify user</a></td>
+<td class="org-left">GET  <code>/api/v1/user/verify/:id</code></td>
+<td class="org-left">guest</td>
+</tr>
+
+<tr>
+<td class="org-left"><a href="#orgd53698d">Reset user password</a></td>
+<td class="org-left">POST <code>/api/v1/user/reset</code></td>
+<td class="org-left">guest</td>
+</tr>
+
+<tr>
+<td class="org-left"><a href="#orgfb81347">Get product list</a></td>
+<td class="org-left">GET  <code>/api/v1/product/list</code></td>
+<td class="org-left">guest</td>
+</tr>
+
+<tr>
+<td class="org-left"><a href="#org54a75a0">Create order</a></td>
+<td class="org-left">POST <code>/api/v1/order/id</code></td>
+<td class="org-left">guest</td>
+</tr>
+
+<tr>
+<td class="org-left"><a href="#org0ab0524">Modify order</a></td>
+<td class="org-left">PUT  <code>/api/v1/order/id</code></td>
+<td class="org-left">user</td>
+</tr>
+
+<tr>
+<td class="org-left"><a href="#org0d62395">Checkout order</a></td>
+<td class="org-left">POST <code>/api/v1/order/checkout</code></td>
+<td class="org-left">user</td>
+</tr>
+
+<tr>
+<td class="org-left"><a href="#org256f534">Get order by order id</a></td>
+<td class="org-left">GET  <code>/api/v1/order/id/:id</code></td>
+<td class="org-left">user</td>
+</tr>
+
+<tr>
+<td class="org-left"><a href="#org426e0d1">Get all orders by user</a></td>
+<td class="org-left">GET  <code>/api/v1/order/id/list</code></td>
+<td class="org-left">user</td>
+</tr>
+
+<tr>
+<td class="org-left"><a href="#org0e8d849">Change user password</a></td>
+<td class="org-left">POST <code>/api/v1/user/changepwd</code></td>
+<td class="org-left">user</td>
+</tr>
+
+<tr>
+<td class="org-left"><a href="#org76738fe">Get all orders</a></td>
+<td class="org-left">GET  <code>/api/v1/order/list</code></td>
+<td class="org-left">admin</td>
+</tr>
+
+<tr>
+<td class="org-left"><a href="#org606a5f3">Get all users</a></td>
+<td class="org-left">GET  <code>/api/v1/user/list</code></td>
+<td class="org-left">admin</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+<div id="outline-container-org5435a0a" class="outline-4">
+<h4 id="org5435a0a"><span class="section-number-4">4.1.1</span> Register user</h4>
+<div class="outline-text-4" id="text-4-1-1">
+<p>
+Register new user with email and password. Sends mail to the email used to register with verification
+code if SMTP server configuration is set.
+</p>
+
+<ul class="org-ul">
+<li><p>
+Example Request
+</p>
+<div class="org-src-container">
+<pre class="src src-shell">curl <span style="color: #8b2252;">'http://localhost:54545/api/v1/user/register'</span> <span style="color: #8b2252;">\</span>
+-H <span style="color: #8b2252;">'Content-Type: application/x-www-form-urlencoded'</span> <span style="color: #8b2252;">\</span>
+-X POST <span style="color: #8b2252;">\</span>
+--data-raw <span style="color: #8b2252;">'email=stripe%40newbeelearn.com&amp;password=test&amp;confirm-password=test&amp;remember=on'</span>
+</pre>
+</div></li>
+
+<li><p>
+Example Response
+</p>
+<pre class="example" id="orgde499d4">
+{"status":"success"}
+</pre></li>
+</ul>
 </div>
 </div>
 
-<div id="outline-container-org5496d1c" class="outline-2">
-<h2 id="org5496d1c"><span class="section-number-2">4</span> FAQ</h2>
-<div class="outline-text-2" id="text-4">
+<div id="outline-container-org652be6d" class="outline-4">
+<h4 id="org652be6d"><span class="section-number-4">4.1.2</span> Login user</h4>
+<div class="outline-text-4" id="text-4-1-2">
+<p>
+Login user with email and password. Returns json if "postlogin" field is not set in config file
+otherwise redirects to the page specified in "postlogin"
+</p>
+<ul class="org-ul">
+<li><p>
+Example Request
+</p>
+<div class="org-src-container">
+<pre class="src src-shell">curl <span style="color: #8b2252;">'http://localhost:54545/api/v1/user/login'</span> <span style="color: #8b2252;">\</span>
+-H <span style="color: #8b2252;">'Content-Type: application/x-www-form-urlencoded'</span> <span style="color: #8b2252;">\</span>
+-X POST <span style="color: #8b2252;">\</span>
+--data-raw <span style="color: #8b2252;">'email=admin%40example.com&amp;password=admin'</span>
+</pre>
+</div></li>
+
+<li><p>
+Example Response
+</p>
+<pre class="example" id="org8764973">
+{
+  "data": {
+    "user_id": "1",
+    "username": ""
+  },
+  "msg": "user found",
+  "status": "success"
+}
+</pre></li>
+</ul>
 </div>
-<div id="outline-container-org8616d54" class="outline-3">
-<h3 id="org8616d54"><span class="section-number-3">4.1</span> Is this opensource?</h3>
-<div class="outline-text-3" id="text-4-1">
+</div>
+
+<div id="outline-container-org9aa383a" class="outline-4">
+<h4 id="org9aa383a"><span class="section-number-4">4.1.3</span> Logout user</h4>
+<div class="outline-text-4" id="text-4-1-3">
+<p>
+Logs out logged in user and redirects to homepage
+</p>
+<ul class="org-ul">
+<li><p>
+Example Request
+</p>
+<div class="org-src-container">
+<pre class="src src-shell">curl <span style="color: #8b2252;">'http://localhost:54545/api/v1/user/logout'</span> <span style="color: #8b2252;">\</span>
+-H <span style="color: #8b2252;">'Cookie: session_id=9e8b22a3-15ac-442f-bf65-15c37dbfc889; max-age=300; path=/; secure; SameSite=Lax'</span>
+</pre>
+</div></li>
+
+<li><p>
+Example Response  
+</p>
+<pre class="example" id="orgd6dcc8d">
+&lt;!doctype html&gt;
+&lt;html lang="en"&gt;
+  &lt;head&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+</pre></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org962094f" class="outline-4">
+<h4 id="org962094f"><span class="section-number-4">4.1.4</span> Verify user</h4>
+<div class="outline-text-4" id="text-4-1-4">
+<p>
+Verifies the email of registered user by sending url if domain is set or code that should be appended after the verify api
+if domain is not set
+</p>
+<ul class="org-ul">
+<li><p>
+Example Request
+</p>
+<div class="org-src-container">
+<pre class="src src-shell">curl <span style="color: #8b2252;">'http://localhost:54545/api/v1/user/verify/cafj5grn0gpog1j3a0m0'</span>
+</pre>
+</div></li>
+
+<li><p>
+Example Response
+</p>
+<pre class="example" id="org2de0481">
+{"status":"success"}
+</pre></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgd53698d" class="outline-4">
+<h4 id="orgd53698d"><span class="section-number-4">4.1.5</span> Reset user password</h4>
+<div class="outline-text-4" id="text-4-1-5">
+<p>
+Resets the user password and sends the new temporary code for login. User needs to use this code
+on next login and change the password
+</p>
+<ul class="org-ul">
+<li><p>
+Example Request
+</p>
+<div class="org-src-container">
+<pre class="src src-shell">curl <span style="color: #8b2252;">'http://localhost:54545/api/v1/user/reset'</span> <span style="color: #8b2252;">\</span>
+-H <span style="color: #8b2252;">'Content-Type: application/x-www-form-urlencoded'</span> <span style="color: #8b2252;">\</span>
+-X POST <span style="color: #8b2252;">\</span>
+--data-raw <span style="color: #8b2252;">'email=stripe%40newbeelearn.com'</span>
+</pre>
+</div></li>
+
+<li><p>
+Example Response
+</p>
+<pre class="example" id="org14d2b89">
+{
+"data": null,
+"msg": "password reset successful",
+"status": "success"
+}
+</pre></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgfb81347" class="outline-4">
+<h4 id="orgfb81347"><span class="section-number-4">4.1.6</span> Get product list</h4>
+<div class="outline-text-4" id="text-4-1-6">
+<p>
+Get all the products listed for sale on website. Takes "limit" and "offset" as queries.
+If query is not set default values of limit is set to 10 and offset to 0
+</p>
+<ul class="org-ul">
+<li><p>
+Example Request
+</p>
+<div class="org-src-container">
+<pre class="src src-shell">curl <span style="color: #8b2252;">'http://localhost:54545/api/v1/product/list?limit=1&amp;offset=0'</span>
+</pre>
+</div></li>
+
+<li><p>
+Example Response
+</p>
+<pre class="example" id="orgc409674">
+{
+"data": [
+  {
+    "prd_id": 1,
+    "prd_name": "course1",
+    "sku": "prod-course-1",
+    "permalink": "users/list/",
+    "price": 10000,
+    "currency": "USD",
+    "period": 365,
+    "status": "active"
+  }
+],
+"msg": "Order found",
+"status": "success"
+}
+</pre></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org54a75a0" class="outline-4">
+<h4 id="org54a75a0"><span class="section-number-4">4.1.7</span> Create order</h4>
+<div class="outline-text-4" id="text-4-1-7">
+<p>
+Creates new order with products listed in <code>"line_item"</code> field. Request should be valid json.
+Actual <code>order_id/user_id</code> etc. fields are populated by the server any dummy value can be passed.
+</p>
+<ul class="org-ul">
+<li><p>
+Example Request
+</p>
+<div class="org-src-container">
+<pre class="src src-shell">curl <span style="color: #8b2252;">'http://localhost:54545/api/v1/order/id'</span> <span style="color: #8b2252;">\</span>
+-H <span style="color: #8b2252;">'Content-Type: application/json; charset=utf-8'</span> <span style="color: #8b2252;">\</span>
+-H <span style="color: #8b2252;">'Cookie: session_id=cad8439e-dcc4-475e-94fc-12b75f85bb20; max-age=300; path=/; secure; SameSite=Lax'</span> <span style="color: #8b2252;">\</span>
+-X POST <span style="color: #8b2252;">\</span>
+--data-raw <span style="color: #8b2252;">'  {</span>
+<span style="color: #8b2252;">  "order_id": 1,</span>
+<span style="color: #8b2252;">  "user_id": 3,</span>
+<span style="color: #8b2252;">  "currency": "USD",</span>
+<span style="color: #8b2252;">  "line_items": [</span>
+<span style="color: #8b2252;">    {</span>
+<span style="color: #8b2252;">      "sku": "prod-course-1"</span>
+<span style="color: #8b2252;">    },</span>
+<span style="color: #8b2252;">    {</span>
+<span style="color: #8b2252;">      "sku": "prod-course-3"</span>
+<span style="color: #8b2252;">    }</span>
+<span style="color: #8b2252;">  ]</span>
+<span style="color: #8b2252;">}'</span>
+</pre>
+</div></li>
+
+<li><p>
+Example Response
+</p>
+<pre class="example" id="org5b2760a">
+{
+"data": {
+  "order_id": 1,
+  "user_id": 3,
+  "created_at": "2022-06-07 11:45:57.601996759 +0000 UTC",
+  "modified_at": "2022-06-07 11:45:57.601996759 +0000 UTC",
+  "status": "active",
+  "currency": "USD",
+  "order_number": "cafjktbn0gpp5hq3dt4g",
+  "grand_total": 11000,
+  "line_items": [
+    {
+      "line_id": 1,
+      "order_id": 1,
+      "prd_id": 1,
+      "created_at": "2022-06-07 11:45:57.601996759 +0000 UTC",
+      "modified_at": "2022-06-07 11:45:57.601996759 +0000 UTC",
+      "grand": 10000,
+      "enabled": true,
+      "sku": "prod-course-1"
+    },
+    {
+      "line_id": 2,
+      "order_id": 1,
+      "prd_id": 2,
+      "created_at": "2022-06-07 11:45:57.601996759 +0000 UTC",
+      "modified_at": "2022-06-07 11:45:57.601996759 +0000 UTC",
+      "grand": 1000,
+      "enabled": true,
+      "sku": "prod-course-3"
+    }
+  ]
+},
+"msg": "Order found",
+"status": "success"
+}
+</pre></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org0ab0524" class="outline-4">
+<h4 id="org0ab0524"><span class="section-number-4">4.1.8</span> Modify order</h4>
+<div class="outline-text-4" id="text-4-1-8">
+<p>
+Modifies existing order by adding/deleting products in <code>line_item</code> field. User must be logged in to
+modify the order and order should be in active state. Use the previous response of create order or get order
+to add/delete products
+</p>
+<ul class="org-ul">
+<li><p>
+Example Request
+</p>
+<div class="org-src-container">
+<pre class="src src-shell">curl <span style="color: #8b2252;">'http://localhost:54545/api/v1/order/id'</span> <span style="color: #8b2252;">\</span>
+-H <span style="color: #8b2252;">'Content-Type: application/json; charset=utf-8'</span> <span style="color: #8b2252;">\</span>
+-H <span style="color: #8b2252;">'Cookie: session_id=cad8439e-dcc4-475e-94fc-12b75f85bb20; max-age=300; path=/; secure; SameSite=Lax'</span> <span style="color: #8b2252;">\</span>
+-X PUT <span style="color: #8b2252;">\</span>
+--data-raw <span style="color: #8b2252;">'  {</span>
+<span style="color: #8b2252;">    "order_id": 1,</span>
+<span style="color: #8b2252;">    "user_id": 3,</span>
+<span style="color: #8b2252;">    "created_at": "2022-06-07 11:45:57.601996759 +0000 UTC",</span>
+<span style="color: #8b2252;">    "modified_at": "2022-06-07 11:45:57.601996759 +0000 UTC",</span>
+<span style="color: #8b2252;">    "status": "active",</span>
+<span style="color: #8b2252;">    "currency": "USD",</span>
+<span style="color: #8b2252;">    "order_number": "cafjktbn0gpp5hq3dt4g",</span>
+<span style="color: #8b2252;">    "grand_total": 11000,</span>
+<span style="color: #8b2252;">    "line_items": [</span>
+<span style="color: #8b2252;">         {</span>
+<span style="color: #8b2252;">        "line_id": 2,</span>
+<span style="color: #8b2252;">        "order_id": 1,</span>
+<span style="color: #8b2252;">        "prd_id": 2,</span>
+<span style="color: #8b2252;">        "created_at": "2022-06-07 11:45:57.601996759 +0000 UTC",</span>
+<span style="color: #8b2252;">        "modified_at": "2022-06-07 11:45:57.601996759 +0000 UTC",</span>
+<span style="color: #8b2252;">        "grand": 1000,</span>
+<span style="color: #8b2252;">        "enabled": true,</span>
+<span style="color: #8b2252;">        "sku": "prod-course-3"</span>
+<span style="color: #8b2252;">      }</span>
+<span style="color: #8b2252;">    ]</span>
+<span style="color: #8b2252;">  }'</span>
+</pre>
+</div></li>
+
+<li><p>
+Example Response
+</p>
+<pre class="example" id="org3ece6f2">
+{
+"data": {
+  "order_id": 1,
+  "user_id": 3,
+  "created_at": "2022-06-07 11:45:57.601996759 +0000 UTC",
+  "modified_at": "2022-06-07 11:48:05.425488765 +0000 UTC",
+  "status": "active",
+  "currency": "USD",
+  "order_number": "cafjktbn0gpp5hq3dt4g",
+  "grand_total": 1000,
+  "line_items": [
+    {
+      "line_id": 2,
+      "order_id": 1,
+      "prd_id": 2,
+      "created_at": "2022-06-07 11:45:57.601996759 +0000 UTC",
+      "modified_at": "2022-06-07 11:48:05.425488765 +0000 UTC",
+      "grand": 1000,
+      "enabled": true,
+      "sku": "prod-course-3"
+    }
+  ]
+},
+"msg": "Order found",
+"status": "success"
+}
+</pre></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org0d62395" class="outline-4">
+<h4 id="org0d62395"><span class="section-number-4">4.1.9</span> Checkout order</h4>
+<div class="outline-text-4" id="text-4-1-9">
+<p>
+Gets stripe url for payment of order created by create order api.
+Use the response from create order/modify order/get order api to send the request.
+Do not modify the response in this request it will result in failure.
+</p>
+<ul class="org-ul">
+<li><p>
+Example Request
+</p>
+<div class="org-src-container">
+<pre class="src src-shell">curl <span style="color: #8b2252;">'http://localhost:54545/api/v1/order/checkout'</span> <span style="color: #8b2252;">\</span>
+-H <span style="color: #8b2252;">'Content-Type: application/json; charset=utf-8'</span> <span style="color: #8b2252;">\</span>
+-H <span style="color: #8b2252;">'Cookie: session_id=2f1be070-7256-4e84-a4ef-c14754cabcdb; max-age=300; path=/; secure; SameSite=Lax'</span> <span style="color: #8b2252;">\</span>
+-X POST <span style="color: #8b2252;">\</span>
+--data-raw <span style="color: #8b2252;">' {</span>
+<span style="color: #8b2252;">        "order_id": 1,</span>
+<span style="color: #8b2252;">        "user_id": 3,</span>
+<span style="color: #8b2252;">        "created_at": "2022-06-07 11:45:57.601996759 +0000 UTC",</span>
+<span style="color: #8b2252;">        "modified_at": "2022-06-07 11:45:57.601996759 +0000 UTC",</span>
+<span style="color: #8b2252;">        "status": "active",</span>
+<span style="color: #8b2252;">        "currency": "USD",</span>
+<span style="color: #8b2252;">        "order_number": "cafjktbn0gpp5hq3dt4g",</span>
+<span style="color: #8b2252;">        "grand_total": 11000,</span>
+<span style="color: #8b2252;">        "line_items": [</span>
+<span style="color: #8b2252;">             {</span>
+<span style="color: #8b2252;">            "line_id": 2,</span>
+<span style="color: #8b2252;">            "order_id": 1,</span>
+<span style="color: #8b2252;">            "prd_id": 2,</span>
+<span style="color: #8b2252;">            "created_at": "2022-06-07 11:45:57.601996759 +0000 UTC",</span>
+<span style="color: #8b2252;">            "modified_at": "2022-06-07 11:45:57.601996759 +0000 UTC",</span>
+<span style="color: #8b2252;">            "grand": 1000,</span>
+<span style="color: #8b2252;">            "enabled": true,</span>
+<span style="color: #8b2252;">            "sku": "prod-course-3"</span>
+<span style="color: #8b2252;">          }</span>
+<span style="color: #8b2252;">        ]</span>
+<span style="color: #8b2252;">      }'</span>
+</pre>
+</div></li>
+
+<li><p>
+Example Response
+</p>
+<pre class="example" id="org603aece">
+{
+"data": {
+  "url": "https://checkout.stripe.com/pay/cs_test_a17D2l74NsKMv29YJ1c5rSBPx7BGSsNAsObGAsOanEJqyFNXKEYDLji4BZ#fidkdWxOYHwnPyd1blpxYHZxWjA0TlVKPHNMaW9vYEd1YmhdUWQ3UUJqSEpMYTMza11ObGAyXDFPcXA8bz1yY1VicVZVdDN8c1NkaUZEazxIQWdjM04wdz1DTmF3PXxHaVE9bTVuZz1pUWw3NTUybHZLZldgaicpJ2N3amhWYHdzYHcnP3F3cGApJ2lkfGpwcVF8dWAnPyd2bGtiaWBabHFgaCcpJ2BrZGdpYFVpZGZgbWppYWB3dic%2FcXdwYHgl"
+},
+"msg": "Order found",
+"status": "success"
+}
+</pre></li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org256f534" class="outline-4">
+<h4 id="org256f534"><span class="section-number-4">4.1.10</span> Get order by order number</h4>
+<div class="outline-text-4" id="text-4-1-10">
+<p>
+Get order details by order number
+</p>
+<ul class="org-ul">
+<li><p>
+Example Request
+</p>
+<div class="org-src-container">
+<pre class="src src-shell">curl <span style="color: #8b2252;">'http://localhost:54545/api/v1/order/id/cafjktbn0gpp5hq3dt4g'</span> <span style="color: #8b2252;">\</span>
+-H <span style="color: #8b2252;">'Content-Type: application/json; charset=utf-8'</span> <span style="color: #8b2252;">\</span>
+-H <span style="color: #8b2252;">'Cookie: session_id=fe9b9fff-c5c0-4745-becf-ecb0e5abca81; max-age=300; path=/; secure; SameSite=Lax'</span>
+</pre>
+</div></li>
+
+<li><p>
+Example Response
+</p>
+<pre class="example" id="orgf0ff62f">
+ {
+ "data": {
+   "order_id": 1,
+   "user_id": 3,
+   "created_at": "2022-06-07 11:45:57.601996759 +0000 UTC",
+   "modified_at": "2022-06-07 11:48:05.425488765 +0000 UTC",
+   "status": "active",
+   "currency": "USD",
+   "order_number": "cafjktbn0gpp5hq3dt4g",
+   "grand_total": 1000,
+   "line_items": [
+     {
+       "line_id": 2,
+       "order_id": 1,
+       "prd_id": 2,
+       "created_at": "2022-06-07 11:45:57.601996759 +0000 UTC",
+       "modified_at": "2022-06-07 11:48:05.425488765 +0000 UTC",
+       "grand": 1000,
+       "enabled": true
+     }
+   ]
+ },
+ "msg": "Order found",
+ "status": "success"
+}
+</pre></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org426e0d1" class="outline-4">
+<h4 id="org426e0d1"><span class="section-number-4">4.1.11</span> Get all orders by user</h4>
+<div class="outline-text-4" id="text-4-1-11">
+<p>
+Get all orders by user. Takes limit and offset as query parameters default values are 10 and 0 respectively
+</p>
+<ul class="org-ul">
+<li><p>
+Example Request
+</p>
+<div class="org-src-container">
+<pre class="src src-shell">curl <span style="color: #8b2252;">'http://localhost:54545/api/v1/order/id/list?limit=1&amp;offset=0'</span> <span style="color: #8b2252;">\</span>
+-H <span style="color: #8b2252;">'Content-Type: application/json; charset=utf-8'</span> <span style="color: #8b2252;">\</span>
+-H <span style="color: #8b2252;">'Cookie: session_id=fe9b9fff-c5c0-4745-becf-ecb0e5abca81; max-age=300; path=/; secure; SameSite=Lax'</span>
+</pre>
+</div></li>
+
+<li><p>
+Example Response
+</p>
+<pre class="example" id="org6da069b">
+ {
+ "data": [
+   {
+     "order_id": 1,
+     "user_id": 3,
+     "created_at": "2022-06-07 11:45:57.601996759 +0000 UTC",
+     "modified_at": "2022-06-07 11:48:05.425488765 +0000 UTC",
+     "status": "active",
+     "currency": "USD",
+     "order_number": "cafjktbn0gpp5hq3dt4g",
+     "grand_total": 1000
+   }
+ ],
+ "msg": "Order found",
+ "status": "success"
+}
+</pre></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org0e8d849" class="outline-4">
+<h4 id="org0e8d849"><span class="section-number-4">4.1.12</span> Change user password</h4>
+<div class="outline-text-4" id="text-4-1-12">
+<p>
+Change user password. User must be logged in to make this request
+</p>
+<ul class="org-ul">
+<li><p>
+Example Request
+</p>
+<div class="org-src-container">
+<pre class="src src-shell">curl <span style="color: #8b2252;">'http://localhost:54545/api/v1/user/changepwd'</span> <span style="color: #8b2252;">\</span>
+-H <span style="color: #8b2252;">'Content-Type: application/x-www-form-urlencoded'</span> <span style="color: #8b2252;">\</span>
+-H <span style="color: #8b2252;">'Cookie: session_id=fe9b9fff-c5c0-4745-becf-ecb0e5abca81; max-age=300; path=/; secure; SameSite=Lax'</span> <span style="color: #8b2252;">\</span>
+-X POST <span style="color: #8b2252;">\</span>
+--data-raw <span style="color: #8b2252;">'oldpassword=cafjjjbn0gpp5hq3dt40&amp;password=test123'</span>
+</pre>
+</div></li>
+
+<li><p>
+Example Response
+</p>
+<pre class="example" id="org0905a63">
+{
+"data": null,
+"msg": "password change successful",
+"status": "success"
+}
+</pre></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org76738fe" class="outline-4">
+<h4 id="org76738fe"><span class="section-number-4">4.1.13</span> Get all orders</h4>
+<div class="outline-text-4" id="text-4-1-13">
+<p>
+Get all orders created in the store. Takes limit and offset as query parameters default values are 10 and 0 respectively
+Available to admin users only.
+Get all orders
+</p>
+<ul class="org-ul">
+<li><p>
+Example Request
+</p>
+<div class="org-src-container">
+<pre class="src src-shell">curl <span style="color: #8b2252;">'http://localhost:54545/api/v1/order/list?limit=1&amp;offset=0'</span> <span style="color: #8b2252;">\</span>
+-H <span style="color: #8b2252;">'Content-Type: application/json; charset=utf-8'</span> <span style="color: #8b2252;">\</span>
+-H <span style="color: #8b2252;">'Cookie: session_id=e4ecd3a4-b8be-493e-a33d-518ab11c65e8; max-age=300; path=/; secure; SameSite=Lax'</span>
+</pre>
+</div></li>
+
+<li><p>
+Example Response
+</p>
+<pre class="example" id="org850eb24">
+{
+"data": [
+  {
+    "order_id": 1,
+    "user_id": 3,
+    "created_at": "2022-06-07 11:45:57.601996759 +0000 UTC",
+    "modified_at": "2022-06-07 11:48:05.425488765 +0000 UTC",
+    "status": "active",
+    "currency": "USD",
+    "order_number": "cafjktbn0gpp5hq3dt4g",
+    "price_total": 1000,
+    "discount_total": 0,
+    "sub_total": 1000,
+    "taxes_total": 0,
+    "grand_total": 1000,
+    "refunds_total": 0,
+    "created_channel": "",
+    "payment_provider": ""
+  }
+],
+"msg": "Order found",
+"status": "success"
+}
+</pre></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org606a5f3" class="outline-4">
+<h4 id="org606a5f3"><span class="section-number-4">4.1.14</span> Get all users</h4>
+<div class="outline-text-4" id="text-4-1-14">
+<p>
+Get all users registered on the website. Takes limit and offset as query parameters default values are 10 and 0 respectively
+Available to admin users only.
+</p>
+<ul class="org-ul">
+<li><p>
+Example Request
+</p>
+<div class="org-src-container">
+<pre class="src src-shell">curl <span style="color: #8b2252;">'http://localhost:54545/api/v1/user/list?limit=1&amp;offset=0'</span> <span style="color: #8b2252;">\</span>
+-H <span style="color: #8b2252;">'Content-Type: application/json; charset=utf-8'</span> <span style="color: #8b2252;">\</span>
+-H <span style="color: #8b2252;">'Cookie: session_id=e4ecd3a4-b8be-493e-a33d-518ab11c65e8; max-age=300; path=/; secure; SameSite=Lax'</span>
+</pre>
+</div></li>
+
+<li><p>
+Example Response
+</p>
+<pre class="example" id="orge575e54">
+{
+"data": [
+  {
+    "user_id": 1,
+    "email": "admin@example.com",
+    "created_at": "2022-06-07 10:53:00.480128762 +0000 UTC",
+    "username": "",
+    "last_password_set": "2022-06-07 10:53:00.480128762 +0000 UTC",
+    "last_login": "2022-06-07 10:53:00.480128762 +0000 UTC",
+    "verified": 0,
+    "reset": 0,
+    "user_role": "admin"
+  },
+  {
+    "user_id": 2,
+    "email": "guest@example.com",
+    "created_at": "2022-06-07 10:53:00.532691788 +0000 UTC",
+    "username": "",
+    "last_password_set": "2022-06-07 10:53:00.532691788 +0000 UTC",
+    "last_login": "2022-06-07 10:53:00.532691788 +0000 UTC",
+    "verified": 0,
+    "reset": 0,
+    "user_role": "guest"
+  },
+  {
+    "user_id": 3,
+    "email": "stripe@newbeelearn.com",
+    "created_at": "2022-06-07 11:13:06.947313364 +0000 UTC",
+    "username": "",
+    "last_password_set": "2022-06-07 11:13:06.947313364 +0000 UTC",
+    "last_login": "2022-06-07 11:13:06.947313364 +0000 UTC",
+    "verified": 2,
+    "reset": 1,
+    "user_role": "user"
+  }
+],
+"msg": "Order found",
+"status": "success"
+}
+</pre></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div id="outline-container-org3f506ca" class="outline-2">
+<h2 id="org3f506ca"><span class="section-number-2">5</span> FAQ</h2>
+<div class="outline-text-2" id="text-5">
+</div>
+<div id="outline-container-org731c923" class="outline-3">
+<h3 id="org731c923"><span class="section-number-3">5.1</span> Is this opensource?</h3>
+<div class="outline-text-3" id="text-5-1">
 <p>
 No, only binaries are released and site is used for discussions around the product.
 </p>
 </div>
 </div>
-<div id="outline-container-orgf09c36e" class="outline-3">
-<h3 id="orgf09c36e"><span class="section-number-3">4.2</span> Why was this created?</h3>
-<div class="outline-text-3" id="text-4-2">
+<div id="outline-container-orgbb39229" class="outline-3">
+<h3 id="orgbb39229"><span class="section-number-3">5.2</span> What is the current status?</h3>
+<div class="outline-text-3" id="text-5-2">
+<p>
+It's in alpha stage functionality is complete however it may contain bugs
+</p>
+</div>
+</div>
+<div id="outline-container-orgb5daa82" class="outline-3">
+<h3 id="orgb5daa82"><span class="section-number-3">5.3</span> Why was this created?</h3>
+<div class="outline-text-3" id="text-5-3">
 <p>
 This was created because of the need to host courses
 </p>
@@ -297,44 +1134,45 @@ This was created because of the need to host courses
 </ol>
 </div>
 </div>
-<div id="outline-container-org3e11b91" class="outline-3">
-<h3 id="org3e11b91"><span class="section-number-3">4.3</span> What are the supported OS?</h3>
-<div class="outline-text-3" id="text-4-3">
+<div id="outline-container-orga957c61" class="outline-3">
+<h3 id="orga957c61"><span class="section-number-3">5.4</span> Can i use it for saas it already has user mangement and billing?</h3>
+<div class="outline-text-3" id="text-5-4">
+<p>
+Not right now because subscription is not supported it is for one time digital products only.
+It also doesn't have route forwarding functionality where your own saas can be plugged in.
+However these changes can be added if there is sufficient interest
+plase start discussion if you would like to have these features as of now it is not on roadmap.
+</p>
+</div>
+</div>
+<div id="outline-container-org98465fc" class="outline-3">
+<h3 id="org98465fc"><span class="section-number-3">5.5</span> What are the use cases?</h3>
+<div class="outline-text-3" id="text-5-5">
+<p>
+It can be used for hosting course and associated blogs. Blogs with newsletter. Blogs with premium content.
+Landing page of startup and associated blog. Selling themes etc.
+</p>
+</div>
+</div>
+<div id="outline-container-org2c8df24" class="outline-3">
+<h3 id="org2c8df24"><span class="section-number-3">5.6</span> What are the supported OS?</h3>
+<div class="outline-text-3" id="text-5-6">
 <p>
 linux and macos are supported out of the box. Windows users can use WSL however it is not tested.
 </p>
 </div>
 </div>
-<div id="outline-container-org6cd4a13" class="outline-3">
-<h3 id="org6cd4a13"><span class="section-number-3">4.4</span> Where can i request feature? suggestions for improvement?</h3>
-<div class="outline-text-3" id="text-4-4">
+<div id="outline-container-orgb2600b1" class="outline-3">
+<h3 id="orgb2600b1"><span class="section-number-3">5.7</span> Where can i request feature? suggestions for improvement?</h3>
+<div class="outline-text-3" id="text-5-7">
 <p>
 Create issue and tag it with feature
 </p>
 </div>
 </div>
-<div id="outline-container-org8952ae8" class="outline-3">
-<h3 id="org8952ae8"><span class="section-number-3">4.5</span> I provided serverpath in config file and left rest of the values blank why is it not working?</h3>
-<div class="outline-text-3" id="text-4-5">
-<p>
-In case ssconfig.toml is provided, please provide all the fields. Default values are used only when ssconfig.toml
-is not provided
-</p>
-</div>
-</div>
-<div id="outline-container-org6e3284e" class="outline-3">
-<h3 id="org6e3284e"><span class="section-number-3">4.6</span> I have found that i can register and login users should i use them?</h3>
-<div class="outline-text-3" id="text-4-6">
-<p>
-It is in pre alpha stage and i am gathering requirements from users so there are no compatibility guarantees.
-You can give it a try however i would suggest to wait for sometime before using these features in production.
-Let us know what feature you are interested in discussions
-</p>
-</div>
-</div>
-<div id="outline-container-org9c1a5ef" class="outline-3">
-<h3 id="org9c1a5ef"><span class="section-number-3">4.7</span> What does it costs?</h3>
-<div class="outline-text-3" id="text-4-7">
+<div id="outline-container-orgf1cedbf" class="outline-3">
+<h3 id="orgf1cedbf"><span class="section-number-3">5.8</span> What does it costs?</h3>
+<div class="outline-text-3" id="text-5-8">
 <p>
 This is not yet decided as of now it is free to use. 
 Paid product if available will use separate channel.
@@ -344,20 +1182,22 @@ Help us in deciding it, tell us what you would pay for it in discussion board.
 </div>
 </div>
 </div>
-<div id="outline-container-org21617ad" class="outline-2">
-<h2 id="org21617ad"><span class="section-number-2">5</span> TODO</h2>
-<div class="outline-text-2" id="text-5">
+<div id="outline-container-org9d7f69c" class="outline-2">
+<h2 id="org9d7f69c"><span class="section-number-2">6</span> TODO</h2>
+<div class="outline-text-2" id="text-6">
 <ul class="org-ul">
 <li class="off"><code>[&#xa0;]</code> Add sample scripts for running in aws/gcp/azure/alibabacloud etc.</li>
 <li class="off"><code>[&#xa0;]</code> Add sample site to demonstrate server functionality</li>
 <li class="off"><code>[&#xa0;]</code> Add performance data</li>
+<li class="off"><code>[&#xa0;]</code> Add automatic backups</li>
+<li class="off"><code>[&#xa0;]</code> Add support for subscription in case there is sufficient interest from community</li>
 </ul>
 </div>
 </div>
 </div>
 <div id="postamble" class="status">
 <p class="author">Author: John</p>
-<p class="date">Created: 2021-12-07 Tue 21:09</p>
+<p class="date">Created: 2022-06-16 Thu 16:23</p>
 <p class="validation"><a href="https://validator.w3.org/check?uri=referer">Validate</a></p>
 </div>
 </body>
