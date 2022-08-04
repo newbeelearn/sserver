@@ -1,6 +1,6 @@
 Serve your site and sell courses with self hosted server.
 
-**sserver** is simple headless server for hosting courses and associated blog/static content with minimal overhead.
+**sserver** is simple headless server for hosting courses and associated blog/static content from private github repository with minimal overhead.
 
 It provides https out of the box so you don't have to deal with installing/managing certificates.
 It syncs the content automatically from github so you don't have to upload your content to server. It also supports premium content with simple configuration file without affecting your content workflow for e.g. if you are using static site generator like hugo you can hide the premium content from public by specifying it in config file. It has stripe integration so you can sell your premium content. It has user management built in for adding/authenticating users.
